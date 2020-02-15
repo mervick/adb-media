@@ -15,7 +15,8 @@ NAME
     get-volume-level.sh - get volume of android device using adb
 
 USAGE
-    bash get-volume-level.sh [-d <device>|--device=<device>] [-h|--help]
+    bash get-volume-level.sh [-d <device>|--device=<device>]
+      [-p|--percentage] [-h|--help]
 
 OPTIONS
     -d <device>, --device=<device>
@@ -29,7 +30,7 @@ OPTIONS
 
     -h, --help
         Show this help
-AUTHORS
+AUTHOR
     Andrey Izman (c) 2020 <izmanw@gmail.com>
 
 LICENSE

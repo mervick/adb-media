@@ -13,7 +13,8 @@ DESCRIPTION
     Play previous song at the Android device via adb
 
 USAGE
-    bash set-volume-down.sh [-n[=<driver>]|--notification[=<driver>]] [-h|--help]
+    bash play-prev.sh [-n[=<driver>]|--notification[=<driver>]]
+      [-a <app>|--app=<app>] [-i <icon>|--icon=<icon>] [-h|--help]
 
 OPTIONS
     -n[=<driver>], --notification[=<driver>]
@@ -28,7 +29,7 @@ OPTIONS
 
     -h, --help
         Show this help
-AUTHORS
+AUTHOR
     Andrey Izman (c) 2020 <izmanw@gmail.com>
 
 LICENSE
@@ -89,6 +90,7 @@ if ${notify}; then
       text="${data%% ### *}"
       title="${data##* ### }"
 
+      pkill notify-osd
       if [[ "$text" != "$title" ]]; then
         notify-send "$title" "$text" -i "$icon"
       else

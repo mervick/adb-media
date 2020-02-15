@@ -2,6 +2,7 @@
 
 notify=false
 driver='notify-send'
+icon='audio-headphones'
 
 while [[ $# > 0 ]]; do
   case $1 in
@@ -11,16 +12,20 @@ DESCRIPTION
     Increase volume of Android device via adb
 
 USAGE
-    bash set-volume-down.sh [-n[=<driver>]|--notification[=<driver>]] [-h|--help]
+    bash set-volume-up.sh [-n[=<driver>]|--notification[=<driver>]]
+      [-i <icon>|--icon=<icon>] [-h|--help]
 
 OPTIONS
     -n[=<driver>], --notification[=<driver>]
       Show notification using specified driver. Currently supported drivers:
       'notify-send'. By default is '${driver}'
 
+    -i <icon>, --icon=<icon>
+      Notification icon. Default is '${icon}'
+
     -h, --help
         Show this help
-AUTHORS
+AUTHOR
     Andrey Izman (c) 2020 <izmanw@gmail.com>
 
 LICENSE
@@ -54,8 +59,9 @@ if ${notify}; then
 
   case "$driver" in
     notify-send)
+      pkill notify-osd
       volume=$(bash "$DIR/get-volume-level.sh" -d=headset -p)
-      notify-send "Android volume $volume%" -i audio-headphones
+      notify-send "Android volume $volume%" -i "$icon"
     ;;
   esac
 fi

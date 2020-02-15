@@ -13,7 +13,8 @@ DESCRIPTION
     Play next song at the Android device via adb
 
 USAGE
-    bash set-volume-down.sh [-n[=<driver>]|--notification[=<driver>]] [-h|--help]
+    bash get-notification.sh [-a <app>|--app=<app>]
+      [-d <delimiter>|--delimiter=<delimiter>] [-h|--help]
 
 OPTIONS
     -a <app>, --app=<app>
@@ -24,7 +25,7 @@ OPTIONS
 
     -h, --help
         Show this help
-AUTHORS
+AUTHOR
     Andrey Izman (c) 2020 <izmanw@gmail.com>
 
 LICENSE

@@ -12,7 +12,8 @@ DESCRIPTION
     Decrease volume of Android device via adb
 
 USAGE
-    bash set-volume-down.sh [-n[=<driver>]|--notification[=<driver>]] [-h|--help]
+    bash set-volume-down.sh [-n[=<driver>]||--notification[=<driver>]]
+      [-i <icon>|--icon=<icon>] [-h|--help]
 
 OPTIONS
     -n[=<driver>], --notification[=<driver>]
@@ -24,7 +25,7 @@ OPTIONS
 
     -h, --help
         Show this help
-AUTHORS
+AUTHOR
     Andrey Izman (c) 2020 <izmanw@gmail.com>
 
 LICENSE
@@ -67,6 +68,7 @@ if ${notify}; then
 
   case "$driver" in
     notify-send)
+      pkill notify-osd
       volume=$(bash "$DIR/get-volume-level.sh" -d=headset -p)
       notify-send "Android volume $volume%" -i "$icon"
     ;;
