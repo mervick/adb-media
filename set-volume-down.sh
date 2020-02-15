@@ -47,7 +47,7 @@ EOM
         icon="$1"
       fi
     ;;
-    --icon|-i)
+    --icon=*|-i=*)
         icon="${1#*=}"
     ;;
   esac

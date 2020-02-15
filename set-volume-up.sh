@@ -41,6 +41,15 @@ EOM
     --notification|-n)
       notify=true
     ;;
+    -i)
+      if [[ $# > 1 ]]; then
+        shift
+        icon="$1"
+      fi
+    ;;
+    --icon=*|-i=*)
+        icon="${1#*=}"
+    ;;
   esac
   shift
 done

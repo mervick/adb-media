@@ -51,7 +51,7 @@ EOM
         icon="$1"
       fi
     ;;
-    --icon|-i)
+    --icon=*|-i=*)
         icon="${1#*=}"
     ;;
     -a)
@@ -70,7 +70,7 @@ EOM
   shift
 done
 
-# send command to android to play next
+# send command to android to play next song
 adb shell input keyevent 87
 
 if ${notify}; then
