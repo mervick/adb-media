@@ -65,11 +65,11 @@ data=$(adb shell dumpsys notification --noredact | perl -n00e 's/'"$re"'/\$1/gm 
 text="${data%% ### *}"
 title="${data##* ### }"
 
-text2="${text##*String \(}"
-title2="${title##*String \(}"
+text2="${text#*String \(}"
+title2="${title#*String \(}"
 
 if [[ "$text2" != "$text" ]]; then
-  echo -n "${text2%%\)*}"
+  echo -n "${text2%\)*}"
 fi
 
 if [[ "$text2" != "$text" ]] && [[ "$title2" != "$title" ]]; then
@@ -77,7 +77,7 @@ if [[ "$text2" != "$text" ]] && [[ "$title2" != "$title" ]]; then
 fi
 
 if [[ "$title2" != "$title" ]]; then
-  echo -n "${title2%%\)*}"
+  echo -n "${title2%\)*}"
 fi
 
 echo
