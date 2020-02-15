@@ -11,8 +11,8 @@ while [[ $# > 0 ]]; do
   case $1 in
     -h|--help)
       read -r -d '' help <<- EOM
-NAME
-    get-volume-level.sh - get volume of android device using adb
+DESCRIPTION
+    Get volume of android device using adb
 
 USAGE
     bash get-volume-level.sh [-d <device>|--device=<device>]

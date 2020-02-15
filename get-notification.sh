@@ -10,7 +10,7 @@ while [[ $# > 0 ]]; do
     -h|--help)
       read -r -d '' help <<- EOM
 DESCRIPTION
-    Play next song at the Android device via adb
+    Get notification from Android device via adb by application id
 
 USAGE
     bash get-notification.sh [-a <app>|--app=<app>]
