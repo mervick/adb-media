@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-notify=false
-driver='notify-send'
 app='org.telegram.messenger'
 delimiter=' - '
 
