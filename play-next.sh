@@ -92,7 +92,7 @@ if ${notify}; then
 
       pkill notify-osd
       if [[ "$text" != "$title" ]]; then
-        notify-send "$title" "$text" -i "$icon"
+        notify-send "$text" "$title" -i "$icon"
       else
         notify-send "$title" -i "$icon"
       fi
