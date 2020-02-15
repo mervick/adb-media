@@ -78,7 +78,7 @@ if ${notify}; then
   while [ -h "$SOURCE" ]; do
     DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
     SOURCE="$(readlink "$SOURCE")"
-  #  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+    [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
   done
   DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
