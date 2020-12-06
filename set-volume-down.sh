@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+adb=/home/izman/Android/Sdk/platform-tools/adb
 notify=false
 driver='notify-send'
 icon='audio-headphones'
@@ -55,7 +56,7 @@ EOM
 done
 
 # send command to android device to down volume
-adb shell input keyevent 25
+$adb shell input keyevent 25
 
 if ${notify}; then
   SOURCE="${BASH_SOURCE[0]}"

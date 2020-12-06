@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+adb=/home/izman/Android/Sdk/platform-tools/adb
 app='org.telegram.messenger'
 delimiter=' - '
 
@@ -60,7 +61,7 @@ done
 app="$(echo "$app" | sed 's/\./\\./g')"
 
 re='\sNotificationRecord\(.*?pkg='"$app"'\s[^¤]*?extras=\{[^¤]*?android\.title\=([^\n]*)[^¤]*?android\.text\=([^\n]*)[^¤]*?\s{4}\}'
-data=$(adb shell dumpsys notification --noredact | perl -n00e 's/'"$re"'/\$1/gm && print "$2 ### $1\n";')
+data=$($adb shell dumpsys notification --noredact | perl -n00e 's/'"$re"'/\$1/gm && print "$2 ### $1\n";')
 
 text="${data%% ### *}"
 title="${data##* ### }"

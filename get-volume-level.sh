@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+adb=/home/izman/Android/Sdk/platform-tools/adb
 speaker=volume_ring_speaker
 headset=volume_music_headset
 percentage=false
@@ -71,7 +72,7 @@ while true; do
     active)
       # get active device
       re='\-\s*STREAM_MUSIC:\n\s*[^\n]*\n[^\n]*\n\s*Max:\s*([0-9]*)\n[^\n]*\n\s*Devices:\s*([a-zA-Z0-9]*)'
-      dumpsys="$(adb shell dumpsys audio | grep -zoP "$re")"
+      dumpsys="$($adb shell dumpsys audio | grep -zoP "$re")"
       max_volume=$(echo "$dumpsys" | perl -p00e "s/$re/\$1/gm")
       device="$(echo "$dumpsys" | perl -p00e "s/$re/\$2/gm")"
       continue
@@ -96,7 +97,9 @@ if [[ "$max_volume" == "" ]]; then
 fi
 
 # get current volume level of device
-volume=$(adb shell settings get system "$device")
+volume=$($adb shell settings get system "$device")
+err=$?
+[[ $err != 0 ]] && exit $err
 
 if ${percentage}; then
   echo $((volume * 100 / max_volume))
