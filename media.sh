@@ -145,7 +145,7 @@ if ${notify} || [[ $info ]] ; then
       artist="${data%% ### *}"
 
       if ${notify}; then
-        readarray -t data <<< "$(php "$DIR/parse-rhytmbox.php" "$artist" "$title")"
+        readarray -t data <<< "$(php "$DIR/parse-rhythmbox.php" "$artist" "$title")"
 
         if [[ "${data[3]}" ]]; then
           icon="${data[3]}"
