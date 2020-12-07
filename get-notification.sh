@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-adb=/home/izman/Android/Sdk/platform-tools/adb
-app='org.telegram.messenger'
+adb=~/Android/Sdk/platform-tools/adb
 delimiter=' - '
 
 while [[ $# > 0 ]]; do
@@ -12,12 +11,12 @@ DESCRIPTION
     Get notification from Android device via adb by application id
 
 USAGE
-    bash get-notification.sh [-a <app>|--app=<app>]
+    bash get-notification.sh [-a <app>|-id <app>|--app=<app>]
       [-d <delimiter>|--delimiter=<delimiter>] [-h|--help]
 
 OPTIONS
-    -a <app>, --app=<app>
-      Select notification application. By default is '${app}'
+    -a <app>, -id <app>, --app=<app>
+      Select notification application. By default detects last played application'
 
     -d <delimiter>, --delimiter=<delimiter>
       Print delimiter. Default is '${delimiter}'
@@ -58,10 +57,16 @@ EOM
   shift
 done
 
+if [[ ! $app ]]; then
+  re='Audio playback\s[^¤]*packages=([a-zA-Z0-9\.\-]+)'
+  app="$($adb shell dumpsys media_session | perl -n00e 's/'"$re"'/\$1/m && print "$1";')"
+fi
+
 app="$(echo "$app" | sed 's/\./\\./g')"
 
 re='\sNotificationRecord\(.*?pkg='"$app"'\s[^¤]*?extras=\{[^¤]*?android\.title\=([^\n]*)[^¤]*?android\.text\=([^\n]*)[^¤]*?\s{4}\}'
-data=$($adb shell dumpsys notification --noredact | perl -n00e 's/'"$re"'/\$1/gm && print "$2 ### $1\n";')
+data=$($adb shell dumpsys notification --noredact | sed -e 's/NotificationRecord/¤ NotificationRecord/g'\
+ | perl -n00e 's/'"$re"'/\$1/gm && print "$2 ### $1\n";')
 
 text="${data%% ### *}"
 title="${data##* ### }"

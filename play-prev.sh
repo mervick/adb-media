@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
+adb=~/Android/Sdk/platform-tools/adb
 notify=false
 driver='notify-send'
-app='org.telegram.messenger'
 icon='audio-headphones'
 
 while [[ $# > 0 ]]; do
@@ -14,15 +14,15 @@ DESCRIPTION
 
 USAGE
     bash play-prev.sh [-n[=<driver>]|--notification[=<driver>]]
-      [-a <app>|--app=<app>] [-i <icon>|--icon=<icon>] [-h|--help]
+      [-a <app>|-id <app>|--app=<app>] [-i <icon>|--icon=<icon>] [-h|--help]
 
 OPTIONS
     -n[=<driver>], --notification[=<driver>]
       Show notification using specified driver. Currently supported drivers:
       'notify-send'. By default is '${driver}'
 
-    -a <app>, --app=<app>
-      Select notification application. By default is '${app}'
+    -a <app>, -id <app>, --app=<app>
+      Select notification application. By default detects last played application'
 
     -i <icon>, --icon=<icon>
       Notification icon. Default is '${icon}'
@@ -54,7 +54,7 @@ EOM
     --icon=*|-i=*)
         icon="${1#*=}"
     ;;
-    -a)
+    -a|-id)
       if [[ $# > 1 ]]; then
         shift
         app="$1"
@@ -70,12 +70,17 @@ EOM
   shift
 done
 
+if [[ ! $app ]]; then
+  re='Audio playback\s[^¤]*packages=([a-zA-Z0-9\.\-]+)'
+  app="$($adb shell dumpsys media_session | perl -n00e 's/'"$re"'/\$1/m && print "$1";')"
+fi
+
 # send command to android to play previous song
-adb shell input keyevent 88
+$adb shell input keyevent 88
 
 if ${notify}; then
   SOURCE="${BASH_SOURCE[0]}"
-  while [ -h "$SOURCE" ]; do
+  while [[ -h "$SOURCE" ]]; do
     DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
     SOURCE="$(readlink "$SOURCE")"
     [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
