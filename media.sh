@@ -151,10 +151,10 @@ if ${notify} || [[ $info ]] ; then
           icon="${data[3]}"
         fi
         if [[ "${data[2]}" ]]; then
-          title="$title\n<i>from</i> ${data[2]}"
+          artist="$artist\n<i>from</i> ${data[2]}"
         fi
       fi
-      notify_args=("$artist" "$title" -i "$icon")
+      notify_args=("$title" "$artist" -i "$icon")
     fi
   fi
 
