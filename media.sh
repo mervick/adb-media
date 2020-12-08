@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-adb=~/Android/Sdk/platform-tools/adb
+adb="$(which adb)"
+[[ ! "$adb" ]] && adb=~/Android/Sdk/platform-tools/adb
 notify=false
 driver='notify-send'
 icon='audio-headphones'
@@ -82,6 +83,9 @@ EOM
         exit 2
       fi
     ;;
+    --debug)
+      debug=$1
+    ;;
     --app=*)
       app="${1#*=}"
     ;;
@@ -103,24 +107,34 @@ if [[ "$command" == "" ]]; then
     exit 7
 else
   case "$command" in
-    play)     code=85;; # 85 -->  "KEYCODE_MEDIA_PLAY_PAUSE"
-    pause)    code=85;; # 85 -->  "KEYCODE_MEDIA_PLAY_PAUSE"
-    stop)     code=86;; # 86 -->  "KEYCODE_MEDIA_STOP"
-    next)     code=87;; # 87 -->  "KEYCODE_MEDIA_NEXT"
-    prev)     code=88;; # 88 -->  "KEYCODE_MEDIA_PREVIOUS"
-    forward)  code=90;; # 90 -->  "KEYCODE_MEDIA_FAST_FORWARD"
-    rewind)   code=89;; # 89 -->  "KEYCODE_MEDIA_REWIND"
-    mute)     code=91;; # 91 -->  "KEYCODE_MUTE"
-    up)       code=24; volume=true;;
-    down)     code=25; volume=true;;
-    info)     info=true;;
+    play|pause|play-pause)
+      $adb shell media dispatch play-pause
+    ;;
+    stop|next|previous|fast-forword|mute)
+      $adb shell media dispatch "$command"
+    ;;
+    prev)
+      $adb shell media dispatch previous
+    ;;
+    forword)
+      $adb shell media dispatch fast-forword
+    ;;
+    up)
+      $adb shell media volume --adj raise
+      volume=true
+    ;;
+    down)
+      $adb shell media volume --adj lower
+      volume=true
+    ;;
+    info)
+      info=true
+    ;;
     *)
       (1>&2 echo "Invalid command $command")
       exit 8
   esac
 fi
-
-[[ ! $info ]] && $adb shell input keyevent "$code"
 
 if ${notify} || [[ $info ]] ; then
   SOURCE="${BASH_SOURCE[0]}"
@@ -145,7 +159,9 @@ if ${notify} || [[ $info ]] ; then
       artist="${data%% ### *}"
 
       if ${notify}; then
-        readarray -t data <<< "$(php "$DIR/parse-rhythmbox.php" "$artist" "$title")"
+        readarray -t data <<< "$(php "$DIR/parse-rhythmbox.php" "$artist" "$title" "$debug")"
+
+        [[ "$debug" ]] && echo "rhytmbox data ${data[@]}"
 
         if [[ "${data[3]}" ]]; then
           icon="${data[3]}"
