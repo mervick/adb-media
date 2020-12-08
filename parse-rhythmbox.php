@@ -12,6 +12,8 @@ $xml = file_get_contents($rhythmboxDB);
 $artistRe = preg_quote($argv[1] ?? '', '/');
 $titleRe = preg_quote($argv[2] ?? '', '/');
 
+$debug = ($argv[3] ?? '') === '--debug';
+
 $reg1 = '<entry type="song">(?:(?!<\/entry>).)*' .
         '<title>(' . $titleRe . ')<\/title>(?:(?!<\/entry>).)*' .
         '<artist>(' . $artistRe . ')<\/artist>(?:(?!<\/entry>).)*' .
@@ -23,6 +25,11 @@ foreach ([$reg2, $reg1] as $regexp) {
     if (preg_match('/' . $regexp. '/isSX', $xml, $m)) {
         list(, $title, $artist, $album) = $m;
         $albumArtist = $m[4] ?? $artist;
+
+        if ($debug) {
+            unset($m[0]);
+            print_r($m);
+        }
 
         echo $title, PHP_EOL;
         echo $artist, PHP_EOL;
@@ -36,15 +43,27 @@ foreach ([$reg2, $reg1] as $regexp) {
 
         $db = file_get_contents($albumDB);
 
-        $artistRe = preg_quote($albumArtist, '/');
-        $albumRe = preg_quote($album, '/');
+        $str = function($str) {
+            return str_replace(' ', '\s', preg_quote($str, '/'));
+        };
+
+        $hex = function($hex) {
+            return implode('', array_map(function($hex) {return "[\x$hex]";}, explode(' ', $hex)));
+        };
 
         if (preg_match('/' .
-            '[\x19][\x01][\x26]album[\x00]' . $albumRe .
-            '[\x00]artist[\x00]' . $artistRe . '[\x00](?:(?!file).)*[\x00]{3}file[\x00]{4}[\x2e][\x2f]([^\x00]+)[\x00]' .
-            '/', $db, $m)) {
+            $hex('19 01 26') .
+            'album' . $hex('00') . $str($album) . $hex('00') .
+            'artist' . $hex('00'). $str($albumArtist) . $hex('00') .
+            '[^¤]*?'. $hex('00') .
+            'file'. $hex('00 00 00 00 2E 2F') . '([^\x00]+)' . $hex('00') .
+            '/iSX', $db, $m)) {
             $art = $m[1];
 
+            if ($debug) {
+                unset($m[0]);
+                print_r($m);
+            }
             echo $albumPath . '/' . $art, PHP_EOL;
         }
 

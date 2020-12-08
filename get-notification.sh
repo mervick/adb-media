@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-adb=~/Android/Sdk/platform-tools/adb
+adb="$(which adb)"
+[[ ! "$adb" ]] && adb=~/Android/Sdk/platform-tools/adb
 delimiter=' - '
 
 while [[ $# > 0 ]]; do
@@ -57,7 +58,7 @@ EOM
   shift
 done
 
-if [[ ! $app ]]; then
+if [[ ! "$app" ]]; then
   re='Audio playback\s[^¤]*packages=([a-zA-Z0-9\.\-]+)'
   app="$($adb shell dumpsys media_session | perl -n00e 's/'"$re"'/\$1/m && print "$1";')"
 fi
